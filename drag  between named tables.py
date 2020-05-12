@@ -107,33 +107,22 @@ class Window(QWidget):
         # print ("rowcount=", rowcount)
         # twTop.rowcount = twTop.data.shape(0)
         for index, row in twTop.data.iterrows():
-            ty = QTableWidgetItem(str(row['Strike']))
-            # ty = QTableWidgetItem('zbab')
-            print("row['Strike']=",row['Strike'])
+            Ty = QTableWidgetItem(str(row['Type']))
+            St = QTableWidgetItem(str(row['Strike']))
+            Sy = QTableWidgetItem(str(row['Symbol']))
+            Op = QTableWidgetItem(str(row['Open_Int']))
+            Vo = QTableWidgetItem(str(row['Volume']))
+            La = QTableWidgetItem(str(row['Last']))
+            Ex = QTableWidgetItem(str(row['Exp']))
+
             twTop.insertRow(index)
-            twTop.setItem(index, 2, ty)
-
-            # print("pause")
-
-        # items = [('Red', 'Toyota'), ('Blue', 'RV'), ('Green', 'Beetle')]
-        # for row, (Type,Strike,Symbol,Open_Int,Volume,Last,Exp) in twTop.rowcount:
-        # # for i, (colour, model) in enumerate(twTop.rowcount):
-        #     ty = QTableWidgetItem(Type)
-        #     St = QTableWidgetItem(Strike)
-        #     Sy = QTableWidgetItem(Symbol)
-        #     Op = QTableWidgetItem(Open_Int)
-        #     Vo = QTableWidgetItem(Volume)
-        #     La = QTableWidgetItem(Last)
-        #     Ex = QTableWidgetItem(Exp)
-        #
-        #     twTop.insertRow(twTop.rowCount())
-        #     twTop.setItem(i, 0, c)
-        #     twTop.setItem(i, 1, m)
-        #     twTop.setItem(i, 2, m)
-        #     twTop.setItem(i, 3, m)
-        #     twTop.setItem(i, 4, m)
-        #     twTop.setItem(i, 5, m)
-        #     twTop.setItem(i, 6, m)
+            twTop.setItem(index, 1, Ty)
+            twTop.setItem(index, 2, St)
+            twTop.setItem(index, 3, Sy)
+            twTop.setItem(index, 4, Op)
+            twTop.setItem(index, 5, Vo)
+            twTop.setItem(index, 6, La)
+            twTop.setItem(index, 7, Ex)
 
 
 if __name__ == '__main__':
