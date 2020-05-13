@@ -85,6 +85,7 @@ class Window(QWidget):
         # get twTop HorizontalHeadrLables
         # twTop.setHorizontalHeaderLabels(['Colour', 'Model'])
         twTop.setHorizontalHeaderLabels(list(twTop.data.columns))
+        twTop.setAcceptDrops(False)             # twTop is not accepting drops
 
         twBottom = TableWidgetDragRows()
 
