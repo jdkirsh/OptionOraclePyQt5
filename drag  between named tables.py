@@ -76,15 +76,16 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
             self.setItem(dropRow + i, rowColumn, source)
             dfRow = dropRow
             dfColumn = 'Type'
-            myDF = pd.DataFrame(self.twBottomDict)
+            # myDF = pd.DataFrame(self.twBottomDict)
             # print(twBottomDict[2]['CheckMark'])
             # twBottomDict[2]['CheckMark'] = 'N'
             # print(twBottomDict[2]['CheckMark'])
             # twBottomDict[2]['CheckMark'] = 'Y'
             print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text() )
-            self.twBottomDict[dfRow][dfColumn] = item.text()
-            myDF = pd.DataFrame(self.twBottomDict)
-            print ("myDF=", myDF)
+            self.strategy.at[dfRow, dfColumn] = item.text()
+            # self.twBottomDict[dfRow][dfColumn] = item.text()
+            # myDF = pd.DataFrame(self.twBottomDict)
+            print ("self.strategy=", self.strategy)
 
 
             # rowColumn = 2
@@ -157,7 +158,7 @@ class Window(QWidget):
         twBottom.setHorizontalHeaderLabels(list(twBottom.strategy.columns))
         # table = waitForObject(":Address Book - MyAddresses.adr.File_QTableWidget")
         # print ("twBottom.twBottomDict=", twBottom.twBottomDict)
-        twBottom.twBottomDict = twBottomToListOfDict2.read_twBottomDict()
+        # twBottom.twBottomDict = twBottomToListOfDict2.read_twBottomDict()
         # columnCount = twBottom.columnCount
         # rowCount = twBottom.rowCount
         # print ("JK columnCount=", columnCount," JK rowCount=",rowCount)
