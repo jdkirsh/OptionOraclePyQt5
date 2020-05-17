@@ -4,7 +4,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, QWidget, QHBoxLayout, QApplication, \
     QVBoxLayout
-from database import TwTopTwBottom
+from database import TwTopTwBottom, twBottomToListOfDict2
+import pandas as pd
 
 # from TableWidgetDragRows
 
@@ -40,8 +41,9 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
     def dropEvent(self, event):
         # The QTableWidget from which selected rows will be moved
         # print ("In dropEvent...")
-        twBottomFrame = TwTopTwBottom.gettwBottom()
+        # twBottomFrame = TwTopTwBottom.gettwBottom()
         # print ("self.twBottomFrame=",self.twBottomFrame)
+        # twBottomDict = twBottomToListOfDict2.read_twBottomDict()
 
         sender = event.source()
 
@@ -71,44 +73,40 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
             rowColumn = 1
             item = sender.item(srow, rowColumn)
             source = QTableWidgetItem(item)
-            # print("dropping :", item.text(), " srow=", srow," dropRow=",dropRow, " rowColumn=", rowColumn)
             self.setItem(dropRow + i, rowColumn, source)
-            # dfRow = dropRow + i
             dfRow = dropRow
             dfColumn = 'Type'
-            # twBottomFrame.iat[dfRow, dfColumn] = item.text()
-            # twBottomFrame = twBottomFrame.reset_index(drop=True)
-            twBottomFrame.ix[dfRow, dfColumn] = item.text()
-            # twBottomFrame.ix[1, dfColumn] = item.text()
-            # twBottomFrame.ix[2, dfColumn] = item.text()
-            # twBottomFrame.ix[3, dfColumn] = item.text()
-            # twBottomFrame.at[dfRow, dfColumn] = item.text()
-            # twBottomFrame.loc[dfRow, twBottomFrame.columns.get_loc(dfColumn)] = item.text()
-            # twBottomFrame.loc[twBottomFrame.index[dfRow], dfColumn] = item.text()
-            print ("UPDATING=", "dfRow=",dfRow, " dfColumn=",dfColumn," item.text=",item.text() )
-            print ("new df=",twBottomFrame )
+            myDF = pd.DataFrame(self.twBottomDict)
+            # print(twBottomDict[2]['CheckMark'])
+            # twBottomDict[2]['CheckMark'] = 'N'
+            # print(twBottomDict[2]['CheckMark'])
+            # twBottomDict[2]['CheckMark'] = 'Y'
+            print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text() )
+            self.twBottomDict[dfRow][dfColumn] = item.text()
+            myDF = pd.DataFrame(self.twBottomDict)
+            print ("myDF=", myDF)
 
 
-            rowColumn = 2
-            item = sender.item(srow, rowColumn)
-            source = QTableWidgetItem(item)
-            # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
-            self.setItem(dropRow + i, rowColumn, source)
-
-            rowColumn = 3
-            item = sender.item(srow, rowColumn)
-            source = QTableWidgetItem(item)
-            # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
-            self.setItem(dropRow + i, rowColumn, source)
-
-            rowColumn = 4
+            # rowColumn = 2
             # item = sender.item(srow, rowColumn)
             # source = QTableWidgetItem(item)
-            # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
-            comboBox = QtWidgets.QComboBox()
-            li = ["Put","Call"]
-            comboBox.addItems(li)
-            self.setCellWidget(dropRow + i, rowColumn, comboBox)
+            # # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            # self.setItem(dropRow + i, rowColumn, source)
+            #
+            # rowColumn = 3
+            # item = sender.item(srow, rowColumn)
+            # source = QTableWidgetItem(item)
+            # # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            # self.setItem(dropRow + i, rowColumn, source)
+            #
+            # rowColumn = 4
+            # # item = sender.item(srow, rowColumn)
+            # # source = QTableWidgetItem(item)
+            # # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            # comboBox = QtWidgets.QComboBox()
+            # li = ["Put","Call"]
+            # comboBox.addItems(li)
+            # self.setCellWidget(dropRow + i, rowColumn, comboBox)
 
 
         # delete selected rows
@@ -158,7 +156,8 @@ class Window(QWidget):
         # get twBottom HorizontalHeaderLables
         twBottom.setHorizontalHeaderLabels(list(twBottom.strategy.columns))
         # table = waitForObject(":Address Book - MyAddresses.adr.File_QTableWidget")
-
+        # print ("twBottom.twBottomDict=", twBottom.twBottomDict)
+        twBottom.twBottomDict = twBottomToListOfDict2.read_twBottomDict()
         # columnCount = twBottom.columnCount
         # rowCount = twBottom.rowCount
         # print ("JK columnCount=", columnCount," JK rowCount=",rowCount)
