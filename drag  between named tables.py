@@ -10,6 +10,9 @@ from database import TwTopTwBottom
 
 class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
     def __init__(self, *args, **kwargs):
+        # self.twBottomFrame = TwTopTwBottom.gettwBottom()
+        # print("self.twBottomFame=", self.twBottomFrame)
+
         super().__init__(*args, **kwargs)   # accept arguments
 
         self.cellClicked.connect(self.cell_was_clicked)
@@ -18,6 +21,7 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
         self.setSelectionBehavior(QAbstractItemView.SelectRows) # full row drag mode
         # self.OverwriteMode(False)
         # self.setSelectionMode(QAbstractItemView.SingleSelection)
+
 
         self.last_drop_row = None
 
@@ -29,29 +33,32 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
     # Override this method to get the correct row index for insertion
     def dropMimeData(self, row, col, mimeData, action):
         self.last_drop_row = row
-        print ("In dropMimeData...")
+        # print ("In dropMimeData...")
         return True
 
 
     def dropEvent(self, event):
         # The QTableWidget from which selected rows will be moved
-        print ("In dropEvent...")
+        # print ("In dropEvent...")
+        twBottomFrame = TwTopTwBottom.gettwBottom()
+        # print ("self.twBottomFrame=",self.twBottomFrame)
+
         sender = event.source()
 
         # Default dropEvent method fires dropMimeData with appropriate parameters (we're interested in the row index).
         super().dropEvent(event)
         # Now we know where to insert selected row(s)
-        print ("in  super().dropEvent(event)..."," dropRow = self.last_drop_row", self.last_drop_row)
+        # print ("in  super().dropEvent(event)..."," dropRow = self.last_drop_row", self.last_drop_row)
         dropRow = self.last_drop_row
-        print("dropRow=",dropRow)
+        # print("dropRow=",dropRow)
 
         selectedRows = sender.getselectedRowsFast()
-        print ("selectedRows=",selectedRows)
+        # print ("selectedRows=",selectedRows)
 
         # Allocate space for transfer
         for r in selectedRows:
             self.insertRow(dropRow)
-            print ("In Loop..."," self.insertRow(dropRow)...", " dropRow=",dropRow)
+            # print ("In Loop..."," self.insertRow(dropRow)...", " dropRow=",dropRow)
 
         # if sender == receiver (self), after creating new empty rows selected rows might change their locations
         sel_rows_offsets = [0 if self != sender or srow < dropRow else len(selectedRows) for srow in selectedRows]
@@ -60,28 +67,44 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
         # copy content of selected rows into empty ones
         var1 = enumerate(selectedRows)
         for i, srow in enumerate(selectedRows): # iterate every selected Row
-            print ("for i, srow in enumerate(selectedRows)=", " i=",i, " srow=", srow, " enumerate(selectedRows)=",var1)
+            # print ("for i, srow in enumerate(selectedRows)=", " i=",i, " srow=", srow, " enumerate(selectedRows)=",var1)
             rowColumn = 1
-
             item = sender.item(srow, rowColumn)
-            print ("item.text()=",item.text()," srow=", srow, " rowColumn=", rowColumn)
             source = QTableWidgetItem(item)
-            print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            # print("dropping :", item.text(), " srow=", srow," dropRow=",dropRow, " rowColumn=", rowColumn)
             self.setItem(dropRow + i, rowColumn, source)
+            # dfRow = dropRow + i
+            dfRow = dropRow
+            dfColumn = 'Type'
+            # twBottomFrame.iat[dfRow, dfColumn] = item.text()
+            # twBottomFrame = twBottomFrame.reset_index(drop=True)
+            twBottomFrame.ix[dfRow, dfColumn] = item.text()
+            # twBottomFrame.ix[1, dfColumn] = item.text()
+            # twBottomFrame.ix[2, dfColumn] = item.text()
+            # twBottomFrame.ix[3, dfColumn] = item.text()
+            # twBottomFrame.at[dfRow, dfColumn] = item.text()
+            # twBottomFrame.loc[dfRow, twBottomFrame.columns.get_loc(dfColumn)] = item.text()
+            # twBottomFrame.loc[twBottomFrame.index[dfRow], dfColumn] = item.text()
+            print ("UPDATING=", "dfRow=",dfRow, " dfColumn=",dfColumn," item.text=",item.text() )
+            print ("new df=",twBottomFrame )
+
+
             rowColumn = 2
             item = sender.item(srow, rowColumn)
             source = QTableWidgetItem(item)
-            print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
             self.setItem(dropRow + i, rowColumn, source)
+
             rowColumn = 3
             item = sender.item(srow, rowColumn)
             source = QTableWidgetItem(item)
-            print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
             self.setItem(dropRow + i, rowColumn, source)
+
             rowColumn = 4
             # item = sender.item(srow, rowColumn)
             # source = QTableWidgetItem(item)
-            print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
             comboBox = QtWidgets.QComboBox()
             li = ["Put","Call"]
             comboBox.addItems(li)
@@ -100,10 +123,9 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
         for item in self.selectedItems():
             if item.row() not in selectedRows:
                 selectedRows.append(item.row())
-                # print ("item.row=",item.row())
-                print("item.row=", item.text())
+                # print("In getselectedRowsFast: item.row=", item.text())
         selectedRows.sort()
-        print ("selectedRows=", selectedRows)
+        # print ("In getselectedRowsFast: selectedRows=", selectedRows)
         return selectedRows
 
 class Window(QWidget):
@@ -128,12 +150,29 @@ class Window(QWidget):
         twTop.setAcceptDrops(False)             # twTop is not accepting drops
 
         twBottom = TableWidgetDragRows()
-        twBottom.data = TwTopTwBottom.gettwBottom()
+        twBottom.strategy = TwTopTwBottom.gettwBottom()
+        # print (twBottom.data)
         # get twBottom columnCount
-        twBottom.setColumnCount(twBottom.data.shape[1])
+        twBottom.setColumnCount(twBottom.strategy.shape[1])
 
         # get twBottom HorizontalHeaderLables
-        twBottom.setHorizontalHeaderLabels(list(twBottom.data.columns))
+        twBottom.setHorizontalHeaderLabels(list(twBottom.strategy.columns))
+        # table = waitForObject(":Address Book - MyAddresses.adr.File_QTableWidget")
+
+        # columnCount = twBottom.columnCount
+        # rowCount = twBottom.rowCount
+        # print ("JK columnCount=", columnCount," JK rowCount=",rowCount)
+        # for row in range(rowCount):
+        # for row in rowCount:
+        # #     for col in range(columnCount):
+        #       for col in columnCount:
+        #         item = twBottom.item(row, col)
+        #         itemText = item.text()
+        #         print ("JK Looping: ", "row=",row, " col=",col, "itemText=", itemText)
+                # test.log(str(itemText))
+                # test.verify(itemText != "")
+
+
 
         # self.table_widgets.append(twTop)
         layout.addWidget(twTop)

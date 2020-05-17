@@ -29,6 +29,12 @@ def gettwTop():
     qFrame = get_TableSql(gettwTop)
     return qFrame
 
+def gettwBottom():
+    qFrame = pd.DataFrame  # return dataframe from query
+    gettwBottom = "SELECT * FROM twBottom"
+    qFrame = get_TableSql(gettwBottom)
+    return qFrame
+
 
 def dataSelect(*,callSw, putSw):
     # engine = sqlite3.connect(r'C:\FINANCE\Python\pyCharm\Projects\PyQt5 Tutorials\database\MyDB.db3')
@@ -65,16 +71,20 @@ def main():
     import os
     print ("cwd =", os.getcwd() )
     retFrame = pd.DataFrame
-    retFrame = gettwTop()
-    print ("retFrame=",retFrame)
-    print ("columnCount=",retFrame.shape[1])
-    print ("columnHeader=", list(retFrame.columns))
-    print ("rowCount=", retFrame.shape[0])
 
-    for index, row in retFrame.iterrows():
-        # print(row['c1'], row['c2'])
-        print (row['Strike'], row['Symbol'])
-        print ("pause")
+    retFrame = gettwBottom()
+    print ("twBottom: retFrame=",retFrame)
+    print ("pause")
+    # retFrame.iat[2,3] = 32
+    # print("twBottom: retFrame=", retFrame)
+    # print ("columnCount=",retFrame.shape[1])
+    # print ("columnHeader=", list(retFrame.columns))
+    # print ("rowCount=", retFrame.shape[0])
+    #
+    # for index, row in retFrame.iterrows():
+    #     # print(row['c1'], row['c2'])
+    #     print (row['Strike'], row['Symbol'])
+    #     print ("pause")
     # retFrame = dataSelect(dataIn, True, True)
     # tableFrame = pd.read_csv("SPYtoDF1.csv")
     # engine = sqlite3.connect('MyDB.db3')

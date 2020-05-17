@@ -64,7 +64,9 @@ def main():
     # print (engine.execute("SELECT * FROM options").fetchall() )
     # retFrame = dataSelect(True, True)
     retFrame = pd.DataFrame
-    retFrame = dataSelect(callSw=True,putSw=True)
+    engine = sqlite3.connect('MyDB.db3')
+    retFrame = pd.read_sql_table('twBottom', engine)
+    # retFrame = dataSelect(callSw=True,putSw=True)
     print (retFrame)
     # print (retFrame)
 
