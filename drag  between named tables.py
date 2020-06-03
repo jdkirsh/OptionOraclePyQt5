@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, Q
 from database import TwTopTwBottom, twBottomToListOfDict2
 import pandas as pd
 
+
 # from TableWidgetDragRows
 
 class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
@@ -32,12 +33,25 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
         item = self.itemAt(row, column)
         self.ID = item.text()
 
+
+    # def currentIndexChanged(self, ind):
+    def currentIndexChanged(self, ind, n):
+        # # print('n {1} is: '.format(n))
+        # # print('m {2} is: '.format(m))
+        # # print ("In currentIndexChanged"," ind=",ind)
+        # print ("self.sender().currentIndex()=",self.sender().currentIndex())
+        # print ("self.sender().currentText()=",self.sender().currentText())
+        print("Combo Index changed {0} {1} : {2}".format(ind, self.sender().currentIndex(),
+                                                             self.sender().currentText()))
+
     # Override this method to get the correct row index for insertion
     def dropMimeData(self, row, col, mimeData, action):
         self.last_drop_row = row
         # print ("In dropMimeData...")
         return True
 
+    # def pass_Net_Adap(self):
+    #     print("type=", comboBox.currentText())
 
     def dropEvent(self, event):
         # The QTableWidget from which selected rows will be moved
@@ -72,43 +86,74 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
         for i, srow in enumerate(selectedRows): # iterate every selected Row
             # print ("for i, srow in enumerate(selectedRows)=", " i=",i, " srow=", srow, " enumerate(selectedRows)=",var1)
             rowColumn = 1
-            item = sender.item(srow, rowColumn)
-            source = QTableWidgetItem(item)
-            self.setItem(dropRow + i, rowColumn, source)
             dfRow = dropRow
             dfColumn = 'Type'
-            # myDF = pd.DataFrame(self.twBottomDict)
-            # print(twBottomDict[2]['CheckMark'])
-            # twBottomDict[2]['CheckMark'] = 'N'
-            # print(twBottomDict[2]['CheckMark'])
-            # twBottomDict[2]['CheckMark'] = 'Y'
-            print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text() )
-            self.strategy.at[dfRow, dfColumn] = item.text()
-            # self.twBottomDict[dfRow][dfColumn] = item.text()
-            # myDF = pd.DataFrame(self.twBottomDict)
-            print ("self.strategy=", self.strategy)
+            item = sender.item(srow, rowColumn)
+            source = QTableWidgetItem(item)
+            print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
+            self.comboBox = QtWidgets.QComboBox()
+            li = ["Put","Call"]
+            self.comboBox.addItems(li)
+            # self.comboBox.currentIndexChanged.connect(self.currentIndexChanged)
+            self.comboBox.currentIndexChanged.connect(lambda: self.currentIndexChanged('z') )
 
+            # self.setCellWidget(dropRow + i, rowColumn, comboBox)
+            self.setCellWidget(dropRow + i, self.strategy.columns.get_loc(dfColumn), self.comboBox)
+            print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text())
+            self.strategy.at[dfRow, dfColumn] = item.text()
+            self.comboBox.setCurrentText(item.text())
+            # self.comboBox.currentIndexChanged(print ("cinim"))
+
+            # self.comboBox.activated.connect(pass_Net_Adap)
+            #
+            # def pass_Net_Adap(self):
+            #     print ("type=", self.comboBox.currentText())
 
             # rowColumn = 2
             # item = sender.item(srow, rowColumn)
             # source = QTableWidgetItem(item)
-            # # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
             # self.setItem(dropRow + i, rowColumn, source)
-            #
+            # dfRow = dropRow
+            # dfColumn = 'Type'
+            # print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text() )
+            # self.strategy.at[dfRow, dfColumn] = item.text()
+
+            # print ("self.strategy=", self.strategy)
+
             # rowColumn = 3
             # item = sender.item(srow, rowColumn)
             # source = QTableWidgetItem(item)
-            # # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
             # self.setItem(dropRow + i, rowColumn, source)
+            # dfRow = dropRow
+            # dfColumn = 'Strike'
+            # print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text())
+            # self.strategy.at[dfRow, dfColumn] = item.text()
+            # print("self.strategy=", self.strategy)
+            #
             #
             # rowColumn = 4
-            # # item = sender.item(srow, rowColumn)
-            # # source = QTableWidgetItem(item)
-            # # print("dropping :", item.text(), " srow=", srow, " rowColumn=", rowColumn)
-            # comboBox = QtWidgets.QComboBox()
-            # li = ["Put","Call"]
-            # comboBox.addItems(li)
-            # self.setCellWidget(dropRow + i, rowColumn, comboBox)
+            # item = sender.item(srow, rowColumn)
+            # source = QTableWidgetItem(item)
+            # self.setItem(dropRow + i, rowColumn, source)
+            # dfRow = dropRow
+            # dfColumn = 'Symbol'
+            # print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text())
+            # self.strategy.at[dfRow, dfColumn] = item.text()
+            #
+            # rowColumn = 5
+            # item = sender.item(srow, rowColumn)
+            # source = QTableWidgetItem(item)
+            # self.setItem(dropRow + i, rowColumn, source)
+            # dfRow = dropRow
+            # dfColumn = 'Last'
+            # print("UPDATING=", "dfRow=", dfRow, " dfColumn=", dfColumn, " item.text=", item.text())
+            # # self.strategy.at[dfRow, dfColumn] = item.text()
+            # self.strategy.at[dfRow, dfColumn] = float(item.text().replace(',', ''))
+            # # print("self.strategy=", self.strategy)
+            # # print("pause")
+            # print(self.strategy.loc[[0]])
+
+
 
 
         # delete selected rows
@@ -127,6 +172,8 @@ class TableWidgetDragRows(QTableWidget):    # sub class of QTableWidget
         selectedRows.sort()
         # print ("In getselectedRowsFast: selectedRows=", selectedRows)
         return selectedRows
+
+
 
 class Window(QWidget):
     def __init__(self):

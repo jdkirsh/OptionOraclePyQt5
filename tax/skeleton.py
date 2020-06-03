@@ -2,9 +2,8 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 
-# qtcreator_file  = "<your .ui file>" # Enter file here.
-qtcreator_file  = "OptionsOracleV02.ui" # Enter file here.
-Ui_MainWindow, QtBaseClass = uic.loadUiType(qtcreator_file)
+qtCreatorFile = "mainwindow.ui" # Enter file here.
+Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 
 class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
